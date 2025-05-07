@@ -1,0 +1,8 @@
+name: Pixelmon
+version: '1.0'
+main: de.souperman.main.Main
+api-version: '1.21'
+
+commands:
+  pokespawn:
+    description: spawn a pixelmon

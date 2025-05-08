@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.EulerAngle;
 
+import java.util.Objects;
+
 public class CMDPokespawn implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String str, String[] args) {
@@ -28,7 +30,7 @@ public class CMDPokespawn implements CommandExecutor {
             for(PokeType type : PokeType.values()) {
                 if(arg.equalsIgnoreCase(type.toString())) {
                     p.sendMessage("creating pokemon with type: "+type);
-                    Pokemon summon = new Pokemon(type, p);
+                    Pokemon summon = new Pokemon(type, Objects.requireNonNull(Vars.getTrainer(p)));
                     summon.summonAt(p.getLocation());
 
                     return false;

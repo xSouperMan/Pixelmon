@@ -16,55 +16,98 @@ import java.util.Objects;
 
 public class Pokemon {
 
-    private static PokeType type;
+    private PokeType type;
+    private String name;
     private Element primaryElement;
     private Element secondaryElement;
+    private final int maxhp;
     private int hp;
+    private double height;
+
+    private boolean summoned;
 
     private ArmorStand armorStand;
-    private Player owner;
+    private ArmorStand hologram;
+    private ArmorStand healthHologram;
+    private Trainer owner;
     private Location loc;
-    ItemStack texture;
+    private ItemStack itemstack;
+    private String prefix;
 
 
-    public Pokemon(PokeType type, Player owner) {
+    public Pokemon(PokeType type, Trainer owner) {
         this.type = type;
+        this.name = type.name;
         this.owner = owner;
-        this.loc = owner.getLocation();
+        this.loc = owner.getPlayer().getLocation();
+        this.summoned = false;
+        this.height = type.height;
+        this.maxhp = type.maxHP;
 
-        texture = new ItemStack(Material.OMINOUS_TRIAL_KEY);
-        ItemMeta textureMeta = texture.getItemMeta();
+        this.prefix = "§f";
 
-        textureMeta.setCustomModelData(Vars.getModelData(type));
-        texture.setItemMeta(textureMeta);
+        itemstack = new ItemStack(Material.OMINOUS_TRIAL_KEY);
+        ItemMeta itemstackMeta = itemstack.getItemMeta();
+        itemstackMeta.setCustomModelData(type.modelData);
+        itemstackMeta.setDisplayName(prefix+name);
+        itemstack.setItemMeta(itemstackMeta);
+    }
+
+    public ItemStack getItemStack() {
+        return itemstack;
     }
 
     public void summonAt(Location loc) {
 
         this.loc = loc;
+        Location armorStandLoc = loc;
+        Location hologramLoc = new Location(loc.getWorld(), loc.getX(), loc.getY()+height, loc.getZ());
+        Location healthHologramLoc = new Location(hologramLoc.getWorld(), hologramLoc.getX(), hologramLoc.getY()-0.25, hologramLoc.getZ());
 
-        armorStand = (ArmorStand) Objects.requireNonNull(loc.getWorld()).spawnEntity(loc, EntityType.ARMOR_STAND);
-        owner.sendMessage("summoned");
-        armorStand.setInvisible(true);
-        armorStand.setMarker(false);
-        armorStand.setSmall(false);
+        armorStand = (ArmorStand) Objects.requireNonNull(loc.getWorld()).spawnEntity(armorStandLoc, EntityType.ARMOR_STAND);
+        armorStand.setVisible(false);
         armorStand.setGravity(false);
-        armorStand.setArms(true);
+        armorStand.setInvulnerable(true);
+        armorStand.setSilent(true);
         armorStand.setBasePlate(false);
-        EulerAngle rightArmPose = new EulerAngle(Math.toRadians(-90), Math.toRadians(0), Math.toRadians(0));
-        armorStand.setRightArmPose(rightArmPose);
+        armorStand.setCanPickupItems(false);
+        armorStand.setArms(true);
+        armorStand.setCollidable(false);
+        armorStand.setCustomNameVisible(false);
+        armorStand.setRightArmPose(new EulerAngle(0, 0, 0));
+        armorStand.getEquipment().setItemInMainHand(itemstack);
 
-        armorStand.setItemInHand(texture);
+        hologram = (ArmorStand) Objects.requireNonNull(loc.getWorld()).spawnEntity(hologramLoc, EntityType.ARMOR_STAND);
+        hologram.setInvisible(true);
+        hologram.setCustomName("§f"+name);
+        hologram.setCustomNameVisible(true);
+        hologram.setGravity(false);
+        hologram.setMarker(true);
+
+        healthHologram = (ArmorStand) Objects.requireNonNull(loc.getWorld()).spawnEntity(healthHologramLoc, EntityType.ARMOR_STAND);
+        healthHologram.setInvisible(true);
+        healthHologram.setCustomName("§a||||||||||||||||||||");
+        healthHologram.setCustomNameVisible(true);
+        healthHologram.setGravity(false);
+        healthHologram.setMarker(true);
 
         Vars.summonedPokemon.add(this);
+        this.summoned = true;
         Bukkit.broadcastMessage(Vars.summonedPokemon.size()+"");
     }
 
     public void deSummon() {
-        if(armorStand == null) {
-            return;
+        if(armorStand != null) {
+            armorStand.remove();
         }
-        armorStand.remove();
+        if(hologram != null) {
+            hologram.remove();
+        }
+        if(healthHologram != null) {
+            healthHologram.remove();
+        }
+        Vars.summonedPokemon.remove(this);
+        this.summoned = false;
     }
 
     public ArmorStand getArmorStand() {
@@ -74,7 +117,7 @@ public class Pokemon {
         return null;
     }
 
-    public Player getOwner() {
+    public Trainer getOwner() {
         if(owner != null) {
             return owner;
         }
@@ -82,7 +125,23 @@ public class Pokemon {
     }
 
 
-    public static PokeType getType() {
+    public PokeType getType() {
         return type;
+    }
+
+    public Location getLocation() {
+        return loc;
+    }
+
+    public boolean isSummoned() {
+        return summoned;
+    }
+
+    public void setOwner(Trainer trainer) {
+        this.owner = trainer;
+    }
+
+    public void update() {
+
     }
 }

@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.EulerAngle;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class Pokemon {
 
@@ -23,6 +24,7 @@ public class Pokemon {
     private final int maxhp;
     private int hp;
     private double height;
+    private int level;
 
     private boolean summoned;
 
@@ -43,6 +45,8 @@ public class Pokemon {
         this.summoned = false;
         this.height = type.height;
         this.maxhp = type.maxHP;
+        Random rndm = new Random();
+        this.level = rndm.nextInt(30) + 1;
 
         this.prefix = "§f";
 
@@ -52,6 +56,26 @@ public class Pokemon {
         itemstackMeta.setDisplayName(prefix+name);
         itemstack.setItemMeta(itemstackMeta);
     }
+
+    public Pokemon(PokeType type, Trainer owner, int level) {
+        this.type = type;
+        this.name = type.name;
+        this.owner = owner;
+        this.loc = owner.getPlayer().getLocation();
+        this.summoned = false;
+        this.height = type.height;
+        this.maxhp = type.maxHP;
+        this.level = level;
+
+        this.prefix = "§f";
+
+        itemstack = new ItemStack(Material.OMINOUS_TRIAL_KEY);
+        ItemMeta itemstackMeta = itemstack.getItemMeta();
+        itemstackMeta.setCustomModelData(type.modelData);
+        itemstackMeta.setDisplayName(prefix+name);
+        itemstack.setItemMeta(itemstackMeta);
+    }
+
 
     public ItemStack getItemStack() {
         return itemstack;

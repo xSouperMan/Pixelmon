@@ -1,0 +1,55 @@
+{
+    "model": {
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:custom_model_data",
+      "index": 0,
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "minecraft:item/ominous_trial_key"
+      },
+      "entries": [
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "minecraft:item/bulbasaur"
+          },
+          "threshold": 10001
+        },
+        {
+            "model": {
+              "type": "minecraft:model",
+              "model": "minecraft:item/ivysaur"
+            },
+            "threshold": 10002
+        },
+        {
+            "model": {
+              "type": "minecraft:model",
+              "model": "minecraft:item/venusaur"
+            },
+            "threshold": 10003
+        },
+        {
+            "model": {
+              "type": "minecraft:model",
+              "model": "minecraft:item/charmander"
+            },
+            "threshold": 10004
+        },
+        {
+            "model": {
+              "type": "minecraft:model",
+              "model": "minecraft:item/charmeleon"
+            },
+            "threshold": 10005
+        },
+        {
+            "model": {
+              "type": "minecraft:model",
+              "model": "minecraft:item/charizard"
+            },
+            "threshold": 10006
+        }
+      ]
+    }
+  }
